@@ -1,0 +1,58 @@
+---
+import '../styles/global.css';
+interface Props { title?: string }
+const { title = 'AI HTR — Handwritten Text Recognition' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AI HTR — advanced handwritten text recognition for archives, libraries, research centers, and businesses. Up to 99% accuracy. Ready out of the box." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <title>{title}</title>
+  </head>
+  <body class="bg-white">
+    <slot />
+
+    <script>
+      /* ── Language toggle ── */
+      const LANG_KEY = 'ai-htr-lang';
+      const saved = localStorage.getItem(LANG_KEY) || 'en';
+      if (saved === 'ru') document.documentElement.classList.add('lang-ru');
+
+      function toggleLang() {
+        const isRu = document.documentElement.classList.toggle('lang-ru');
+        localStorage.setItem(LANG_KEY, isRu ? 'ru' : 'en');
+        document.querySelectorAll<HTMLElement>('[data-lang-btn]').forEach(btn => {
+          btn.textContent = isRu ? 'EN' : 'RU';
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const isRu = document.documentElement.classList.contains('lang-ru');
+        document.querySelectorAll<HTMLElement>('[data-lang-btn]').forEach(btn => {
+          btn.textContent = isRu ? 'EN' : 'RU';
+          btn.addEventListener('click', toggleLang);
+        });
+      });
+
+      /* ── Scroll reveal ── */
+      const observer = new IntersectionObserver(
+        entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+        { threshold: 0.12 }
+      );
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+      });
+
+      /* ── Navbar on scroll ── */
+      const navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', () => {
+        if (navbar) navbar.classList.toggle('navbar-scrolled', window.scrollY > 20);
+      });
+    </script>
+  </body>
+</html>
