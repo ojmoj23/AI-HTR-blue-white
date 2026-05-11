@@ -20,7 +20,7 @@ const { title = 'AI HTR — Handwritten Text Recognition' } = Astro.props;
     <script>
       /* ── Language toggle ── */
       const LANG_KEY = 'ai-htr-lang';
-      const saved = localStorage.getItem(LANG_KEY) || 'en';
+      const saved = localStorage.getItem(LANG_KEY) || (navigator.language?.startsWith('ru') ? 'ru' : 'en');
       if (saved === 'ru') document.documentElement.classList.add('lang-ru');
 
       function toggleLang() {
