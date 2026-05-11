@@ -20,5 +20,11 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# Claude Code internals
+.claude/
+
+# Source project materials (never commit)
+Исходные файлы проекта (вся информация)/
+
 # jetbrains setting folder
 .idea/

@@ -27,18 +27,32 @@
 
         <p class="text-white/70 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
           <span class="en">Join leading institutions in the US and Europe. Get a demo and see AI HTR process your documents in real time.</span>
-          <span class="ru">Присоединяйтесь к ведущим организациям США и Европы. Получите демо и увидьте, как AI HTR обрабатывает ваши документы в реальном времени.</span>
+          <span class="ru">Присоединяйтесь к ведущим организациям США и Европы. Получите демо и проверьте, как AI HTR обрабатывает ваши документы в реальном времени.</span>
         </p>
 
         <!-- Email form -->
-        <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-8" onsubmit="return false;">
+        <form
+          id="demo-form"
+          class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-8"
+          action="https://api.web3forms.com/submit"
+          method="POST"
+        >
+          <!-- Web3Forms access key — замените YOUR_ACCESS_KEY на ключ с web3forms.com -->
+          <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY" />
+          <input type="hidden" name="subject" value="AI HTR — запрос демо" />
+          <input type="hidden" name="redirect" value="false" />
+          <input type="hidden" name="botcheck" value="" style="display:none" />
+
           <input
             type="email"
+            name="email"
+            required
             placeholder="your@email.com"
             class="flex-1 px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:border-[#50A8FF] focus:bg-white/15 transition-all"
           />
           <button
             type="submit"
+            id="demo-submit-btn"
             class="px-7 py-3.5 rounded-full bg-[#0067B8] text-white font-semibold text-sm hover:bg-[#0055A0] transition-all shadow-lg hover:shadow-[#0067B8]/40 whitespace-nowrap"
           >
             <span class="en">Request Demo</span>
@@ -46,6 +60,13 @@
           </button>
         </form>
 
+        <!-- Success / error message -->
+        <div id="form-result" class="hidden mb-4 text-sm font-medium"></div>
+
+        <p class="text-white/40 text-xs mb-2">
+          <span class="en">By clicking the button, you agree to our <a href="/privacy" class="underline hover:text-white/70 transition-colors">Privacy Policy</a>.</span>
+          <span class="ru">Нажимая на кнопку, вы соглашаетесь с <a href="/privacy" class="underline hover:text-white/70 transition-colors">Политикой конфиденциальности</a>.</span>
+        </p>
         <p class="text-white/40 text-xs">
           <span class="en">No spam. We'll respond within 24 hours.</span>
           <span class="ru">Без спама. Ответим в течение 24 часов.</span>
@@ -61,15 +82,59 @@
       </p>
       <div class="flex flex-wrap items-center justify-center gap-8 opacity-40">
         <span class="text-lg font-bold text-[#1B2A4A] tracking-wide">🇺🇸 USA</span>
-        <span class="text-lg font-bold text-[#1B2A4A] tracking-wide">🇩🇪 Germany</span>
-        <span class="text-lg font-bold text-[#1B2A4A] tracking-wide">🇫🇷 France</span>
         <span class="text-lg font-bold text-[#1B2A4A] tracking-wide">🇬🇧 UK</span>
-        <span class="text-lg font-bold text-[#1B2A4A] tracking-wide">🇳🇱 Netherlands</span>
+        <span class="text-lg font-bold text-[#1B2A4A] tracking-wide">🇪🇺 Europe</span>
       </div>
     </div>
 
   </div>
 </section>
+
+<script>
+  const form = document.getElementById('demo-form') as HTMLFormElement | null;
+  const result = document.getElementById('form-result');
+  const btn = document.getElementById('demo-submit-btn');
+  const isRu = () => document.documentElement.classList.contains('lang-ru');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!btn || !result) return;
+
+    btn.textContent = isRu() ? 'Отправляем...' : 'Sending...';
+    (btn as HTMLButtonElement).disabled = true;
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: new FormData(form),
+      });
+      const json = await res.json();
+
+      result.classList.remove('hidden');
+      if (json.success) {
+        result.className = 'mb-4 text-sm font-medium text-green-400';
+        result.textContent = isRu()
+          ? '✓ Заявка отправлена! Свяжемся в течение 24 часов.'
+          : '✓ Request sent! We\'ll get back to you within 24 hours.';
+        form.reset();
+      } else {
+        result.className = 'mb-4 text-sm font-medium text-red-400';
+        result.textContent = isRu()
+          ? 'Ошибка отправки. Попробуйте ещё раз.'
+          : 'Submission failed. Please try again.';
+      }
+    } catch {
+      result.classList.remove('hidden');
+      result.className = 'mb-4 text-sm font-medium text-red-400';
+      result.textContent = isRu()
+        ? 'Ошибка сети. Попробуйте ещё раз.'
+        : 'Network error. Please try again.';
+    } finally {
+      btn.textContent = isRu() ? 'Запросить демо' : 'Request Demo';
+      (btn as HTMLButtonElement).disabled = false;
+    }
+  });
+</script>
 
 <!-- Footer -->
 <footer class="bg-[#F8FAFC] border-t border-gray-100 py-8">
@@ -84,15 +149,15 @@
         <span class="font-bold text-[#1B2A4A]">AI HTR</span>
       </div>
       <p class="text-xs text-[#6B7280]">
-        <span class="en">© 2025 AI HTR. Advanced Handwritten Text Recognition.</span>
-        <span class="ru">© 2025 AI HTR. Передовое распознавание рукописного текста.</span>
+        <span class="en">© 2026 AI HTR. Advanced Handwritten Text Recognition.</span>
+        <span class="ru">© 2026 AI HTR. Передовое распознавание рукописного текста.</span>
       </p>
-      <div class="flex items-center gap-4 text-xs text-[#6B7280]">
-        <a href="#" class="hover:text-[#0067B8] transition-colors">
-          <span class="en">Privacy</span><span class="ru">Конфиденциальность</span>
+      <div class="flex items-start gap-6 text-xs text-[#6B7280]">
+        <a href="/privacy" class="hover:text-[#0067B8] transition-colors max-w-[120px] sm:max-w-none">
+          <span class="en">Privacy Policy</span><span class="ru">Политика конфиденциальности</span>
         </a>
-        <a href="#" class="hover:text-[#0067B8] transition-colors">
-          <span class="en">Terms</span><span class="ru">Условия</span>
+        <a href="/terms" class="hover:text-[#0067B8] transition-colors max-w-[120px] sm:max-w-none">
+          <span class="en">Terms of Service</span><span class="ru">Пользовательское соглашение</span>
         </a>
       </div>
     </div>
