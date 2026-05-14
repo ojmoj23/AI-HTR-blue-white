@@ -1,0 +1,30 @@
+name: Backup to Google Drive
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create zip archive (without node_modules)
+        run: |
+          zip -r site-backup.zip . \
+            --exclude "*/node_modules/*" \
+            --exclude "*/.git/*" \
+            --exclude "*/dist/*"
+
+      - name: Upload to Google Drive
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: ${{ secrets.GDRIVE_CREDENTIALS }}
+          filename: site-backup.zip
+          folderId: ${{ secrets.GDRIVE_FOLDER_ID }}
+          name: "backup-${{ github.run_number }}-${{ github.sha }}.zip"
+          overwrite: false

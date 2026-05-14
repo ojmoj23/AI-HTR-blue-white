@@ -1,0 +1,35 @@
+name: Auto Release on merge to main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get date tag
+        id: tag
+        run: echo "tag=backup-$(date +'%Y-%m-%d-%H%M')" >> $GITHUB_OUTPUT
+
+      - name: Create zip archive (without node_modules)
+        run: |
+          zip -r site-backup.zip . \
+            --exclude "*/node_modules/*" \
+            --exclude "*/.git/*" \
+            --exclude "*/dist/*"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: "Бэкап ${{ steps.tag.outputs.tag }}"
+          body: "Автоматический снимок сайта при обновлении main"
+          files: site-backup.zip
