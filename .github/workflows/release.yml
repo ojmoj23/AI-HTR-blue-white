@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '0 10 * * 1'  # каждый понедельник в 10:00 UTC
 
 jobs:
   release:
